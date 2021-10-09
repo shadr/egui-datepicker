@@ -20,7 +20,7 @@ impl epi::App for ExampleApp {
     }
 
     fn update(&mut self, ctx: &egui::CtxRef, _frame: &mut epi::Frame<'_>) {
-        //ctx.set_debug_on_hover(true);
+        // ctx.set_debug_on_hover(true);
         egui::CentralPanel::default().show(ctx, |ui| {
             egui::Grid::new("exaamples_grid").show(ui, |ui| {
                 ui.label("Default");
@@ -31,6 +31,9 @@ impl epi::App for ExampleApp {
                 ui.end_row();
                 ui.label("Movable popup");
                 ui.add(DatePicker::new("movable", &mut self.date).movable(true));
+                ui.end_row();
+                ui.label("Different format");
+                ui.add(DatePicker::new("differentformat", &mut self.date).date_format("%d/%m/%Y"));
                 ui.end_row();
             });
         });

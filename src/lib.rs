@@ -10,6 +10,7 @@
 //! ```
 //!
 //! [ex]: ./examples/simple.rs
+
 use std::{fmt::Display, hash::Hash};
 
 use chrono::{prelude::*, Duration};
@@ -75,17 +76,22 @@ where
         self
     }
 
+    /// Draw names of week days as 7 columns of grid without calling Ui::end_row
+    fn show_grid_header(&mut self, ui: &mut Ui) {
+        let day_indexes = if self.sunday_first {
+            [6, 0, 1, 2, 3, 4, 5]
+        } else {
+            [0, 1, 2, 3, 4, 5, 6]
+        };
+        for i in day_indexes {
+            let b = Weekday::from_u8(i).unwrap();
+            ui.label(b.to_string());
+        }
+    }
+
     fn show_calendar_grid(&mut self, ui: &mut Ui) {
         egui::Grid::new("calendar").show(ui, |ui| {
-            let day_indexes = if self.sunday_first {
-                [6, 0, 1, 2, 3, 4, 5]
-            } else {
-                [0, 1, 2, 3, 4, 5, 6]
-            };
-            for i in day_indexes {
-                let b = Weekday::from_u8(i).unwrap();
-                ui.label(b.to_string());
-            }
+            self.show_grid_header(ui);
             let first_day_of_month = self.date.with_day(1).unwrap();
             let start_offset = if self.sunday_first {
                 first_day_of_month.weekday().num_days_from_sunday()
@@ -175,7 +181,7 @@ where
     Tz::Offset: Display,
 {
     fn ui(mut self, ui: &mut Ui) -> Response {
-        let formated_date = self.date.format("%Y-%m-%d");
+        let formated_date = self.date.format(&self.format_string);
         let button_response = ui.button(formated_date);
         if button_response.clicked() {
             ui.memory().toggle_popup(self.id);
