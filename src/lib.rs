@@ -3,10 +3,27 @@
 //!
 //!
 //! ```no_run
+//! use eframe::egui::Ui;
+//! use chrono::prelude::*;
+//! use std::fmt::Display;
 //! use egui_datepicker::DatePicker;
 //!
-//! let mut date: chrono::Date<T>;
-//! ui.add(DatePicker::new("super_unique_id", &mut date);
+//! struct App<Tz>
+//! where
+//!     Tz: TimeZone,
+//!     Tz::Offset: Display,
+//! {
+//!     date: chrono::Date<Tz>
+//! }
+//! impl<Tz> App<Tz>
+//! where
+//!     Tz: TimeZone,
+//!     Tz::Offset: Display,
+//! {
+//!     fn draw_datepicker(&mut self, ui: &mut Ui) {
+//!         ui.add(DatePicker::new("super_unique_id", &mut self.date));
+//!     }
+//! }
 //! ```
 //!
 //! [ex]: ./examples/simple.rs
@@ -71,12 +88,12 @@ where
     ///Set date format.
     ///See the [chrono::format::strftime](https://docs.rs/chrono/0.4.19/chrono/format/strftime/index.html) for the specification.
     #[must_use]
-    pub fn date_format(mut self, new_format: impl ToString) -> Self {
+    pub fn date_format(mut self, new_format: &impl ToString) -> Self {
         self.format_string = new_format.to_string();
         self
     }
 
-    /// Draw names of week days as 7 columns of grid without calling Ui::end_row
+    /// Draw names of week days as 7 columns of grid without calling `Ui::end_row`
     fn show_grid_header(&mut self, ui: &mut Ui) {
         let day_indexes = if self.sunday_first {
             [6, 0, 1, 2, 3, 4, 5]
@@ -158,19 +175,25 @@ where
         self.date_step_button(ui, ">", Duration::days(365));
     }
 
-    /// Draw combobox with current month and two buttons which substract and add 30 days
+    /// Draw label(will be combobox in future) with current month and two buttons which substract and add 30 days
     /// to current date.
     fn show_month_control(&mut self, ui: &mut Ui) {
         self.date_step_button(ui, "<", Duration::days(-30));
-        let mut selected = self.date.month0() as usize;
-        egui::ComboBox::from_id_source(self.id.with("month_combo_box"))
-            .selected_text(self.date.month0() as usize)
-            .show_index(ui, &mut selected, 12, |i| {
-                chrono::Month::from_usize(i + 1).unwrap().name().to_string()
-            });
-        if selected != self.date.month0() as usize {
-            *self.date = self.date.with_month0(selected as u32).unwrap();
-        }
+        let month_string = chrono::Month::from_u32(self.date.month()).unwrap().name();
+        // TODO: When https://github.com/emilk/egui/pull/543 is merged try to change label to combo box.
+        ui.add(
+            egui::Label::new(format!("{: <9}", month_string))
+                .text_style(egui::TextStyle::Monospace),
+        );
+        // let mut selected = self.date.month0() as usize;
+        // egui::ComboBox::from_id_source(self.id.with("month_combo_box"))
+        //     .selected_text(selected)
+        //     .show_index(ui, &mut selected, 12, |i| {
+        //         chrono::Month::from_usize(i + 1).unwrap().name().to_string()
+        //     });
+        // if selected != self.date.month0() as usize {
+        //     *self.date = self.date.with_month0(selected as u32).unwrap();
+        // }
         self.date_step_button(ui, ">", Duration::days(30));
     }
 }

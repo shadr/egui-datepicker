@@ -33,7 +33,7 @@ impl epi::App for ExampleApp {
                 ui.add(DatePicker::new("movable", &mut self.date).movable(true));
                 ui.end_row();
                 ui.label("Different format");
-                ui.add(DatePicker::new("differentformat", &mut self.date).date_format("%d/%m/%Y"));
+                ui.add(DatePicker::new("differentformat", &mut self.date).date_format(&"%d/%m/%Y"));
                 ui.end_row();
             });
         });
