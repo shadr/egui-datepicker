@@ -1,5 +1,5 @@
 # egui-datepicker
-![crates.io](https://img.shields.io/crates/v/egui-datepicker)
+[![Latest version](https://img.shields.io/crates/v/egui-datepicker)](https://crates.io/crates/egui-datepicker)
 
 This library provide a simple date picker widget for egui with some customization. Checkout the [gif](media/preview.gif) to see widget in action!
 
