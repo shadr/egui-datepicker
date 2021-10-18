@@ -2,7 +2,9 @@
 
 This library provide a simple date picker widget for egui with some customization. Checkout the [gif](media/preview.gif) to see widget in action!
 
-<img align="center" src="media/datepicker-image.png">
+<p align="center">
+    <img src="media/datepicker-image.png">
+</p>
 
 ## ⚡️ Quickstart
 
