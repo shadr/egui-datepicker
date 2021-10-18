@@ -1,9 +1,8 @@
-use chrono::prelude::*;
 use eframe::{egui, epi};
-use egui_datepicker::DatePicker;
+use egui_datepicker::*;
 
 struct ExampleApp {
-    date: chrono::Date<Utc>,
+    date: Date<Utc>,
 }
 
 impl Default for ExampleApp {
