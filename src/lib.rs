@@ -145,7 +145,7 @@ where
         });
     }
 
-    /// Draw current month, buttons for next and previous month.
+    /// Draw current month and buttons for next and previous month.
     fn show_header(&mut self, ui: &mut Ui) {
         ui.horizontal(|ui| {
             self.show_month_control(ui);
@@ -156,7 +156,7 @@ where
         });
     }
 
-    /// Draw button with text and add duration to current date.
+    /// Draw button with text and add duration to current date when that button is clicked.
     fn date_step_button(&mut self, ui: &mut Ui, text: impl ToString, duration: Duration) {
         if ui.button(text).clicked() {
             *self.date = self.date.clone() + duration;
