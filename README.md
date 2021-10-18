@@ -1,7 +1,10 @@
 # egui-datepicker
-![alt text](media/datepicker-image.png)
 
-This library provide a simple date picker widget for egui with some customization.
+This library provide a simple date picker widget for egui with some customization. Checkout the [gif](media/preview.gif) to see widget in action!
+
+<p align="center">
+  ![alt text](media/datepicker-image.png)
+</p>
 
 ## ⚡️ Quickstart
 
@@ -36,6 +39,20 @@ fn update(/*snip*/) {
     ui.add(DatePicker::new("datepicker-unique-id", &mut self.date));
     /*snip*/
 }
+```
+
+## 👀 Customization
+You can set first day of week to sunday with
+```rust
+DatePicker::new(/*snip*/).sunday_first(true)
+```
+Make popup window movable
+```rust
+DatePicker::new(/*snip*/).moveable(true)
+```
+Set different date format
+```rust
+DatePicker::new(/*snip*/).date_format("%d/%m/%Y")
 ```
 
 ## ⚠️ License
