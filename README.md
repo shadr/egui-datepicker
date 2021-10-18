@@ -19,7 +19,7 @@ Import necessary structs
 use egui_datepicker::{DatePicker, Date, Utc};
 ```
 
-or if you already include chrono in your project
+or if you already include `chrono` in your project
 ```rust
 use egui_datepicker::DatePicker;
 use chrono::{Date, offset::Utc};
