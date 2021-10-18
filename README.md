@@ -48,7 +48,7 @@ DatePicker::new(/*snip*/).sunday_first(true)
 ```
 Make popup window movable
 ```rust
-DatePicker::new(/*snip*/).moveable(true)
+DatePicker::new(/*snip*/).movable(true)
 ```
 Set different date format
 ```rust
