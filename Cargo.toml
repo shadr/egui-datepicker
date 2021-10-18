@@ -7,6 +7,10 @@ description = "Adds date picker widget for egui gui library"
 keywords = ["gui"]
 categories = ["gui"]
 repository = "https://github.com/Shadr/egui-datepicker"
+include = [
+    "**/*.rs",
+    "Cargo.toml",
+]
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
@@ -17,4 +21,3 @@ num-traits = "0.2"
 
 [[example]]
 name = "simple"
-
