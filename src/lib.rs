@@ -30,6 +30,10 @@
 
 use std::{fmt::Display, hash::Hash};
 
+pub use chrono::{
+    offset::{FixedOffset, Local, Utc},
+    Date,
+};
 use chrono::{prelude::*, Duration};
 use eframe::{
     egui,
