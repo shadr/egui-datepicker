@@ -110,24 +110,32 @@ where
         }
     }
 
+    fn get_start_offset_of_calendar(&self, first_day: &Date<Tz>) -> u32 {
+        if self.sunday_first {
+            first_day.weekday().num_days_from_sunday()
+        } else {
+            first_day.weekday().num_days_from_monday()
+        }
+    }
+
+    fn get_end_offset_of_calendar(&self, first_day: &Date<Tz>) -> u32 {
+        if self.sunday_first {
+            (7 - (first_day).weekday().num_days_from_sunday()) % 7
+        } else {
+            (7 - (first_day).weekday().num_days_from_monday()) % 7
+        }
+    }
+
     fn show_calendar_grid(&mut self, ui: &mut Ui) {
         egui::Grid::new("calendar").show(ui, |ui| {
             self.show_grid_header(ui);
-            let first_day_of_month = self.date.with_day(1).unwrap();
-            let start_offset = if self.sunday_first {
-                first_day_of_month.weekday().num_days_from_sunday()
-            } else {
-                first_day_of_month.weekday().num_days_from_monday()
-            };
+            let first_day_of_current_month = self.date.with_day(1).unwrap();
+            let start_offset = self.get_start_offset_of_calendar(&first_day_of_current_month);
             let days_in_month = get_days_from_month(self.date.year(), self.date.month());
             let first_day_of_next_month =
-                first_day_of_month.clone() + Duration::days(days_in_month);
-            let end_offset = if self.sunday_first {
-                (7 - (first_day_of_next_month).weekday().num_days_from_sunday()) % 7
-            } else {
-                (7 - (first_day_of_next_month).weekday().num_days_from_monday()) % 7
-            };
-            let start_date = first_day_of_month - Duration::days(start_offset.into());
+                first_day_of_current_month.clone() + Duration::days(days_in_month);
+            let end_offset = self.get_end_offset_of_calendar(&first_day_of_next_month);
+            let start_date = first_day_of_current_month - Duration::days(start_offset.into());
             for i in 0..(start_offset as i64 + days_in_month + end_offset as i64) {
                 if i % 7 == 0 {
                     ui.end_row();
