@@ -37,7 +37,7 @@ pub use chrono::{
 use chrono::{prelude::*, Duration};
 use eframe::{
     egui,
-    egui::{Area, DragValue, Frame, Id, Key, Order, Response, Ui, Widget},
+    egui::{Area, Color32, DragValue, Frame, Id, Key, Order, Response, Ui, Widget},
 };
 use num_traits::FromPrimitive;
 
@@ -45,6 +45,7 @@ use num_traits::FromPrimitive;
 /// - sunday_first: `false`
 /// - movable: `false`
 /// - format_string: `"%Y-%m-%d"`
+/// - weekend_days: `[Weekday::Sat, Weekday::sun]`
 pub struct DatePicker<'a, Tz>
 where
     Tz: TimeZone,
@@ -55,6 +56,8 @@ where
     sunday_first: bool,
     movable: bool,
     format_string: String,
+    weekend_days: Vec<Weekday>,
+    weekend_color: Color32,
 }
 
 impl<'a, Tz> DatePicker<'a, Tz>
@@ -70,6 +73,8 @@ where
             sunday_first: false,
             movable: false,
             format_string: String::from("%Y-%m-%d"),
+            weekend_days: vec![Weekday::Sat, Weekday::Sun],
+            weekend_color: Color32::from_rgb(196, 0, 0),
         }
     }
 
@@ -158,6 +163,9 @@ where
             }
             if self.date.month() != date.month() {
                 ui.style_mut().visuals.button_frame = false;
+            }
+            if self.weekend_days.contains(&date.weekday()) {
+                ui.style_mut().visuals.override_text_color = Some(self.weekend_color);
             }
             if ui.add(day_button).clicked() {
                 *self.date = date;
