@@ -58,6 +58,7 @@ where
     format_string: String,
     weekend_days: Vec<Weekday>,
     weekend_color: Color32,
+    highlight_weekend: bool,
 }
 
 impl<'a, Tz> DatePicker<'a, Tz>
@@ -75,6 +76,7 @@ where
             format_string: String::from("%Y-%m-%d"),
             weekend_days: vec![Weekday::Sat, Weekday::Sun],
             weekend_color: Color32::from_rgb(196, 0, 0),
+            highlight_weekend: true,
         }
     }
 
@@ -99,6 +101,21 @@ where
     #[must_use]
     pub fn date_format(mut self, new_format: &impl ToString) -> Self {
         self.format_string = new_format.to_string();
+        self
+    }
+
+    ///If highlight is true then weekends text color will be `weekend_color` instead default text
+    ///color.
+    #[must_use]
+    pub fn highlight_weekend(mut self, highlight: bool) -> Self {
+        self.highlight_weekend = highlight;
+        self
+    }
+
+    ///Set weekends highlighting color.
+    #[must_use]
+    pub fn highlight_weekend_color(mut self, color: Color32) -> Self {
+        self.weekend_color = color;
         self
     }
 
