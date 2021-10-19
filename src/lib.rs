@@ -110,6 +110,8 @@ where
         }
     }
 
+    /// Get number of days between first day of the month and Monday ( or Sunday if field
+    /// `sunday_first` is set to `true` )
     fn get_start_offset_of_calendar(&self, first_day: &Date<Tz>) -> u32 {
         if self.sunday_first {
             first_day.weekday().num_days_from_sunday()
@@ -118,6 +120,8 @@ where
         }
     }
 
+    /// Get number of days between first day of the next month and Monday ( or Sunday if field
+    /// `sunday_first` is set to `true` )
     fn get_end_offset_of_calendar(&self, first_day: &Date<Tz>) -> u32 {
         if self.sunday_first {
             (7 - (first_day).weekday().num_days_from_sunday()) % 7
