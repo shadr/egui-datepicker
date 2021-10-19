@@ -145,18 +145,22 @@ where
                     ui.end_row();
                 }
                 let d = start_date.clone() + Duration::days(i);
-                ui.centered_and_justified(|ui| {
-                    let mut day_button = egui::Button::new(d.day().to_string());
-                    if self.date == &d {
-                        day_button = day_button.enabled(false);
-                    }
-                    if self.date.month() != d.month() {
-                        ui.style_mut().visuals.button_frame = false;
-                    }
-                    if ui.add(day_button).clicked() {
-                        *self.date = d;
-                    }
-                });
+                self.show_day_button(d, ui);
+            }
+        });
+    }
+
+    fn show_day_button(&mut self, date: Date<Tz>, ui: &mut Ui) {
+        ui.centered_and_justified(|ui| {
+            let mut day_button = egui::Button::new(date.day().to_string());
+            if self.date == &date {
+                day_button = day_button.enabled(false);
+            }
+            if self.date.month() != date.month() {
+                ui.style_mut().visuals.button_frame = false;
+            }
+            if ui.add(day_button).clicked() {
+                *self.date = date;
             }
         });
     }
