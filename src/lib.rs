@@ -181,7 +181,7 @@ where
             if self.date.month() != date.month() {
                 ui.style_mut().visuals.button_frame = false;
             }
-            if self.weekend_days.contains(&date.weekday()) {
+            if self.highlight_weekend && self.weekend_days.contains(&date.weekday()) {
                 ui.style_mut().visuals.override_text_color = Some(self.weekend_color);
             }
             if ui.add(day_button).clicked() {
