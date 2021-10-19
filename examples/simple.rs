@@ -1,4 +1,7 @@
-use eframe::{egui, epi};
+use eframe::{
+    egui::{self, Color32},
+    epi,
+};
 use egui_datepicker::*;
 
 struct ExampleApp {
@@ -33,6 +36,17 @@ impl epi::App for ExampleApp {
                 ui.end_row();
                 ui.label("Different format");
                 ui.add(DatePicker::new("differentformat", &mut self.date).date_format(&"%d/%m/%Y"));
+                ui.end_row();
+                ui.label("Disable weekend highlight");
+                ui.add(
+                    DatePicker::new("noweekendhighlight", &mut self.date).highlight_weekend(false),
+                );
+                ui.end_row();
+                ui.label("Different weekend color");
+                ui.add(
+                    DatePicker::new("differentweekendcolor", &mut self.date)
+                        .highlight_weekend_color(Color32::from_rgb(0, 196, 0)),
+                );
                 ui.end_row();
             });
         });
