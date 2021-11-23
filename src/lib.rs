@@ -173,20 +173,18 @@ where
     }
 
     fn show_day_button(&mut self, date: Date<Tz>, ui: &mut Ui) {
-        ui.centered_and_justified(|ui| {
-            let mut day_button = egui::Button::new(date.day().to_string());
-            if self.date == &date {
-                day_button = day_button.enabled(false);
-            }
-            if self.date.month() != date.month() {
-                ui.style_mut().visuals.button_frame = false;
-            }
-            if self.highlight_weekend && self.weekend_days.contains(&date.weekday()) {
-                ui.style_mut().visuals.override_text_color = Some(self.weekend_color);
-            }
-            if ui.add(day_button).clicked() {
-                *self.date = date;
-            }
+        ui.add_enabled_ui(self.date != &date, |ui| {
+            ui.centered_and_justified(|ui| {
+                if self.date.month() != date.month() {
+                    ui.style_mut().visuals.button_frame = false;
+                }
+                if self.highlight_weekend && self.weekend_days.contains(&date.weekday()) {
+                    ui.style_mut().visuals.override_text_color = Some(self.weekend_color);
+                }
+                if ui.button(date.day().to_string()).clicked() {
+                    *self.date = date;
+                }
+            });
         });
     }
 
