@@ -12,7 +12,7 @@ This library provide a simple date picker widget for egui with some customizatio
 Add `egui-datepicker` as dependency to your project
 ```toml
 [dependencies]
-egui-datepicker = "0.2"
+egui-datepicker = "0.3"
 ```
 
 Import necessary structs
