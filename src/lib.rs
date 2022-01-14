@@ -37,7 +37,7 @@ pub use chrono::{
 use chrono::{prelude::*, Duration};
 use eframe::{
     egui,
-    egui::{Area, Color32, DragValue, Frame, Id, Key, Order, Response, Ui, Widget},
+    egui::{Area, Color32, DragValue, Frame, Id, Key, Order, Response, RichText, Ui, Widget},
 };
 use num_traits::FromPrimitive;
 
@@ -201,7 +201,7 @@ where
 
     /// Draw button with text and add duration to current date when that button is clicked.
     fn date_step_button(&mut self, ui: &mut Ui, text: impl ToString, duration: Duration) {
-        if ui.button(text).clicked() {
+        if ui.button(text.to_string()).clicked() {
             *self.date = self.date.clone() + duration;
         }
     }
@@ -224,10 +224,9 @@ where
         self.date_step_button(ui, "<", Duration::days(-30));
         let month_string = chrono::Month::from_u32(self.date.month()).unwrap().name();
         // TODO: When https://github.com/emilk/egui/pull/543 is merged try to change label to combo box.
-        ui.add(
-            egui::Label::new(format!("{: <9}", month_string))
-                .text_style(egui::TextStyle::Monospace),
-        );
+        ui.add(egui::Label::new(
+            RichText::new(format!("{: <9}", month_string)).text_style(egui::TextStyle::Monospace),
+        ));
         // let mut selected = self.date.month0() as usize;
         // egui::ComboBox::from_id_source(self.id.with("month_combo_box"))
         //     .selected_text(selected)
@@ -248,7 +247,7 @@ where
 {
     fn ui(mut self, ui: &mut Ui) -> Response {
         let formated_date = self.date.format(&self.format_string);
-        let button_response = ui.button(formated_date);
+        let button_response = ui.button(formated_date.to_string());
         if button_response.clicked() {
             ui.memory().toggle_popup(self.id);
         }

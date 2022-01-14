@@ -21,7 +21,7 @@ impl epi::App for ExampleApp {
         "Datepicker example"
     }
 
-    fn update(&mut self, ctx: &egui::CtxRef, _frame: &mut epi::Frame<'_>) {
+    fn update(&mut self, ctx: &egui::CtxRef, _frame: &epi::Frame) {
         // ctx.set_debug_on_hover(true);
         egui::CentralPanel::default().show(ctx, |ui| {
             egui::Grid::new("exaamples_grid").show(ui, |ui| {
