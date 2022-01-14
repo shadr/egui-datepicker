@@ -1,3 +1,4 @@
+use chrono::Datelike;
 use eframe::{
     egui::{self, Color32},
     epi,
@@ -46,6 +47,12 @@ impl epi::App for ExampleApp {
                 ui.add(
                     DatePicker::new("differentweekendcolor", &mut self.date)
                         .highlight_weekend_color(Color32::from_rgb(0, 196, 0)),
+                );
+                ui.end_row();
+                ui.label("Different weekend days, i.e. holidays, Christmas, etc");
+                ui.add(
+                    DatePicker::new("differentweekenddays", &mut self.date)
+                        .weekend_days(|date| date.day() % 2 == 0),
                 );
                 ui.end_row();
             });

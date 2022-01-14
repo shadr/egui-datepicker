@@ -45,7 +45,7 @@ use num_traits::FromPrimitive;
 /// - sunday_first: `false`
 /// - movable: `false`
 /// - format_string: `"%Y-%m-%d"`
-/// - weekend_days: `[Weekday::Sat, Weekday::sun]`
+/// - weekend_func: `date.weekday() == Weekday::Sat || date.weekday() == Weekday::Sun`
 pub struct DatePicker<'a, Tz>
 where
     Tz: TimeZone,
@@ -56,8 +56,8 @@ where
     sunday_first: bool,
     movable: bool,
     format_string: String,
-    weekend_days: Vec<Weekday>,
     weekend_color: Color32,
+    weekend_func: fn(&Date<Tz>) -> bool,
     highlight_weekend: bool,
 }
 
@@ -74,8 +74,8 @@ where
             sunday_first: false,
             movable: false,
             format_string: String::from("%Y-%m-%d"),
-            weekend_days: vec![Weekday::Sat, Weekday::Sun],
             weekend_color: Color32::from_rgb(196, 0, 0),
+            weekend_func: |date| date.weekday() == Weekday::Sat || date.weekday() == Weekday::Sun,
             highlight_weekend: true,
         }
     }
@@ -116,6 +116,12 @@ where
     #[must_use]
     pub fn highlight_weekend_color(mut self, color: Color32) -> Self {
         self.weekend_color = color;
+        self
+    }
+
+    /// Set function, which will decide if date is a weekend day or not.
+    pub fn weekend_days(mut self, is_weekend: fn(&Date<Tz>) -> bool) -> Self {
+        self.weekend_func = is_weekend;
         self
     }
 
@@ -178,7 +184,7 @@ where
                 if self.date.month() != date.month() {
                     ui.style_mut().visuals.button_frame = false;
                 }
-                if self.highlight_weekend && self.weekend_days.contains(&date.weekday()) {
+                if self.highlight_weekend && (self.weekend_func)(&date) {
                     ui.style_mut().visuals.override_text_color = Some(self.weekend_color);
                 }
                 if ui.button(date.day().to_string()).clicked() {
