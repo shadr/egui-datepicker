@@ -28,7 +28,7 @@
 //!
 //! [ex]: ./examples/simple.rs
 
-use std::{fmt::Display, hash::Hash};
+use std::{convert::TryInto, fmt::Display, hash::Hash};
 
 pub use chrono::{
     offset::{FixedOffset, Local, Utc},
@@ -227,7 +227,14 @@ where
     /// Draw label(will be combobox in future) with current month and two buttons which substract and add 30 days
     /// to current date.
     fn show_month_control(&mut self, ui: &mut Ui) {
-        self.date_step_button(ui, "<", Duration::days(-30));
+        // previous month button
+        if ui.button("<".to_string()).clicked() {
+            let day = self.date.day();
+            *self.date = self.date.clone() - Duration::days(day.into());
+            if let Some(date) = self.date.with_day(day) {
+                *self.date = date;
+            };
+        }
         let month_string = chrono::Month::from_u32(self.date.month()).unwrap().name();
         // TODO: When https://github.com/emilk/egui/pull/543 is merged try to change label to combo box.
         ui.add(egui::Label::new(
@@ -242,7 +249,27 @@ where
         // if selected != self.date.month0() as usize {
         //     *self.date = self.date.with_month0(selected as u32).unwrap();
         // }
-        self.date_step_button(ui, ">", Duration::days(30));
+
+        // next month button
+        if ui.button(">".to_string()).clicked() {
+            let day = self.date.day();
+            let day_to_add = get_days_from_month(self.date.year(), self.date.month())
+                .checked_sub(self.date.day0().into())
+                .unwrap_or(1);
+            *self.date = self.date.clone() + Duration::days(day_to_add);
+            if let Some(date) = self.date.with_day(day) {
+                *self.date = date;
+            } else {
+                *self.date = self
+                    .date
+                    .with_day(
+                        get_days_from_month(self.date.year(), self.date.month())
+                            .try_into()
+                            .unwrap_or(1),
+                    )
+                    .unwrap_or_else(|| self.date.clone());
+            };
+        };
     }
 }
 
