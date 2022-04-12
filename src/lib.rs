@@ -28,7 +28,7 @@
 //!
 //! [ex]: ./examples/simple.rs
 
-use std::{fmt::Display, hash::Hash};
+use std::{convert::TryInto, fmt::Display, hash::Hash};
 
 pub use chrono::{
     offset::{FixedOffset, Local, Utc},
@@ -259,6 +259,15 @@ where
             *self.date = self.date.clone() + Duration::days(day_to_add);
             if let Some(date) = self.date.with_day(day) {
                 *self.date = date;
+            } else {
+                *self.date = self
+                    .date
+                    .with_day(
+                        get_days_from_month(self.date.year(), self.date.month())
+                            .try_into()
+                            .unwrap_or(1),
+                    )
+                    .unwrap_or_else(|| self.date.clone());
             };
         };
     }
