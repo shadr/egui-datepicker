@@ -28,6 +28,9 @@
 //!
 //! [ex]: ./examples/simple.rs
 
+pub mod translation;
+use translation::{DateTranslation, TRANSLATION_ENGLISH};
+
 use std::{fmt::Display, hash::Hash};
 
 pub use chrono::{
@@ -39,7 +42,6 @@ use eframe::{
     egui,
     egui::{Area, Color32, DragValue, Frame, Id, Key, Order, Response, RichText, Ui, Widget},
 };
-use num_traits::FromPrimitive;
 
 /// Default values of fields are:
 /// - sunday_first: `false`
@@ -59,6 +61,7 @@ where
     weekend_color: Color32,
     weekend_func: fn(&Date<Tz>) -> bool,
     highlight_weekend: bool,
+    translation: &'static DateTranslation,
 }
 
 impl<'a, Tz> DatePicker<'a, Tz>
@@ -77,6 +80,7 @@ where
             weekend_color: Color32::from_rgb(196, 0, 0),
             weekend_func: |date| date.weekday() == Weekday::Sat || date.weekday() == Weekday::Sun,
             highlight_weekend: true,
+            translation: &TRANSLATION_ENGLISH,
         }
     }
 
@@ -120,8 +124,16 @@ where
     }
 
     /// Set function, which will decide if date is a weekend day or not.
+    #[must_use]
     pub fn weekend_days(mut self, is_weekend: fn(&Date<Tz>) -> bool) -> Self {
         self.weekend_func = is_weekend;
+        self
+    }
+
+    /// Set the translation of this date picker.
+    #[must_use]
+    pub fn translation(mut self, translation: &'static DateTranslation) -> Self {
+        self.translation = translation;
         self
     }
 
@@ -133,8 +145,13 @@ where
             [0, 1, 2, 3, 4, 5, 6]
         };
         for i in day_indexes {
-            let b = Weekday::from_u8(i).unwrap();
-            ui.label(b.to_string());
+            let weekday_string = self
+                .translation
+                .weekday_short
+                .get(i)
+                .copied()
+                .unwrap_or("Unknown");
+            ui.label(weekday_string);
         }
     }
 
@@ -199,7 +216,7 @@ where
         ui.horizontal(|ui| {
             self.show_month_control(ui);
             self.show_year_control(ui);
-            if ui.button("Today").clicked() {
+            if ui.button(self.translation.today).clicked() {
                 *self.date = Utc::now().with_timezone(&self.date.timezone()).date();
             }
         });
@@ -228,7 +245,12 @@ where
     /// to current date.
     fn show_month_control(&mut self, ui: &mut Ui) {
         self.date_step_button(ui, "<", Duration::days(-30));
-        let month_string = chrono::Month::from_u32(self.date.month()).unwrap().name();
+        let month_string = self
+            .translation
+            .month
+            .get(self.date.month0() as usize)
+            .copied()
+            .unwrap_or("Unknown");
         // TODO: When https://github.com/emilk/egui/pull/543 is merged try to change label to combo box.
         ui.add(egui::Label::new(
             RichText::new(format!("{: <9}", month_string)).text_style(egui::TextStyle::Monospace),
