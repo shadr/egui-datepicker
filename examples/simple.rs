@@ -55,6 +55,13 @@ impl epi::App for ExampleApp {
                         .weekend_days(|date| date.day() % 2 == 0),
                 );
                 ui.end_row();
+
+                ui.label("Translation (French)");
+                ui.add(
+                    DatePicker::new("translationfrench", &mut self.date)
+                        .translation(&translation::TRANSLATION_FRENCH),
+                );
+                ui.end_row();
             });
         });
     }
