@@ -1,3 +1,6 @@
+# This project is abandoned
+I lost interest and need in date picker for egui library. You can use date picker from [egui_extras](https://crates.io/crates/egui_extras), it's more featurefull and maintained. If you want take the name on crates.io feel free to message me.
+
 # egui-datepicker
 [![Latest version](https://img.shields.io/crates/v/egui-datepicker)](https://crates.io/crates/egui-datepicker)
 
